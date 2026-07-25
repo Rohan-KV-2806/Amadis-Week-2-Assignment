@@ -49,6 +49,7 @@ function renderTable(apps) {
       <td>${app.interviewDate || '—'}</td>
       <td>${app.notes ? `<button class="btn-view-notes" onclick="viewNotes(${app.id})">📄 View Notes</button>` : '—'}</td>
       <td>
+        <button class="btn-company" onclick="viewCompanyDetails(${app.id})">🏢 Details</button>
         <button class="btn-edit" onclick="editApplication(${app.id})">Edit</button>
         <button class="btn-delete" onclick="deleteApplication(${app.id})">Delete</button>
       </td>
@@ -226,6 +227,90 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTable();
   updateDashboard();
 });
+
+// ================================================================
+//  COMPANY DETAILS – Fetch from Wikipedia API
+// ================================================================
+const companyOverlay     = document.getElementById('companyOverlay');
+const companyTitle       = document.getElementById('companyDetailsTitle');
+const companyDesc        = document.getElementById('companyDetailsDesc');
+const companyLogo        = document.getElementById('companyLogo');
+const companyExtract     = document.getElementById('companyExtract');
+const companyWikiLink    = document.getElementById('companyWikiLink');
+const companyLoading     = document.getElementById('companyLoading');
+const companyContent     = document.getElementById('companyContent');
+const companyError       = document.getElementById('companyError');
+const companyCloseBtn    = document.getElementById('companyCloseBtn');
+
+// Close company modal
+companyCloseBtn.addEventListener('click', () => {
+  companyOverlay.classList.add('hidden');
+});
+
+companyOverlay.addEventListener('click', (e) => {
+  if (e.target === companyOverlay) companyOverlay.classList.add('hidden');
+});
+
+function viewCompanyDetails(id) {
+  const apps = getApplications();
+  const app = apps.find(a => a.id === id);
+  if (!app) return;
+
+  // Show modal with loading state
+  companyOverlay.classList.remove('hidden');
+  companyTitle.textContent = app.company;
+  companyDesc.textContent = '';
+  companyLogo.style.display = 'none';
+  companyLoading.classList.remove('hidden');
+  companyContent.classList.add('hidden');
+  companyError.classList.add('hidden');
+
+  // Try fetching from Clearbit for the logo first
+  const cleanName = app.company.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+  const domainGuess = cleanName.replace(/\s+/g, '') + '.com';
+  companyLogo.src = `https://logo.clearbit.com/${domainGuess}`;
+  companyLogo.style.display = 'block';
+
+  // Fetch company info from Wikipedia API (free, no key needed)
+  const searchQuery = encodeURIComponent(app.company);
+  const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${searchQuery}`;
+
+  fetch(wikiUrl)
+    .then(res => {
+      if (!res.ok) throw new Error('Not found');
+      return res.json();
+    })
+    .then(data => {
+      if (data.type === 'disambiguation' || !data.extract) {
+        throw new Error('Disambiguation page');
+      }
+      companyDesc.textContent = data.description || '';
+      companyExtract.textContent = data.extract;
+      companyWikiLink.href = data.content_urls.desktop.page;
+      companyLoading.classList.add('hidden');
+      companyContent.classList.remove('hidden');
+    })
+    .catch(() => {
+      // Try a broader search fallback
+      const fallbackUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${searchQuery}_company`;
+      return fetch(fallbackUrl)
+        .then(res => {
+          if (!res.ok) throw new Error('Not found');
+          return res.json();
+        })
+        .then(data => {
+          companyDesc.textContent = data.description || '';
+          companyExtract.textContent = data.extract;
+          companyWikiLink.href = data.content_urls.desktop.page;
+          companyLoading.classList.add('hidden');
+          companyContent.classList.remove('hidden');
+        })
+        .catch(() => {
+          companyLoading.classList.add('hidden');
+          companyError.classList.remove('hidden');
+        });
+    });
+}
 
 // ================================================================
 //  UTILITY – Escape HTML to prevent XSS

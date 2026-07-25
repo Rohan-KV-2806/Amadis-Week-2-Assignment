@@ -106,6 +106,38 @@
     </div>
   </div>
 
+  <!-- ===== COMPANY DETAILS MODAL ===== -->
+  <div id="companyOverlay" class="form-overlay hidden">
+    <div class="form-container company-details-container">
+      <div class="company-details-header">
+        <div class="company-logo-wrapper">
+          <img id="companyLogo" src="" alt="Company logo" onerror="this.style.display='none'">
+          <div class="company-logo-fallback" id="logoFallback">🏢</div>
+        </div>
+        <div>
+          <h2 id="companyDetailsTitle">Company Name</h2>
+          <p id="companyDetailsDesc" class="company-desc-tagline"></p>
+        </div>
+      </div>
+      <div class="company-details-body">
+        <div id="companyLoading" class="company-loading">
+          <div class="spinner"></div>
+          <p>Fetching company info...</p>
+        </div>
+        <div id="companyContent" class="company-content hidden">
+          <p id="companyExtract" class="company-extract"></p>
+          <div class="company-meta">
+            <a id="companyWikiLink" href="#" target="_blank" class="btn-wiki">📖 Read more on Wikipedia</a>
+          </div>
+        </div>
+        <div id="companyError" class="company-error hidden">
+          <p>⚠️ Could not fetch company details. Try a different company name.</p>
+        </div>
+      </div>
+      <button class="btn-secondary" id="companyCloseBtn" style="margin-top:16px;width:100%;">Close</button>
+    </div>
+  </div>
+
   <script src="Scripts/storage.js"></script>
   <script src="Scripts/app.js"></script>
 </body>
