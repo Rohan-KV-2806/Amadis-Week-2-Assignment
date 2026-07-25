@@ -47,7 +47,7 @@ function renderTable(apps) {
       <td><span class="${statusClass}">${escapeHtml(app.status)}</span></td>
       <td>${app.appliedDate || '—'}</td>
       <td>${app.interviewDate || '—'}</td>
-      <td>${escapeHtml(app.notes || '')}</td>
+      <td>${app.notes ? `<button class="btn-view-notes" onclick="viewNotes(${app.id})">📄 View Notes</button>` : '—'}</td>
       <td>
         <button class="btn-edit" onclick="editApplication(${app.id})">Edit</button>
         <button class="btn-delete" onclick="deleteApplication(${app.id})">Delete</button>
@@ -156,6 +156,19 @@ function deleteApplication(id) {
   saveApplications(apps);
   renderTable();
   updateDashboard();
+}
+
+// ================================================================
+//  VIEW NOTES – Show notes in alert popup
+// ================================================================
+function viewNotes(id) {
+  const apps = getApplications();
+  const app = apps.find(a => a.id === id);
+  if (!app || !app.notes) {
+    alert('No notes for this application.');
+    return;
+  }
+  alert(`📝 Notes for ${app.company} - ${app.role}:\n\n${app.notes}`);
 }
 
 // ================================================================
