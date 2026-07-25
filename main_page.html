@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Application Tracker</title>
+  <link rel="stylesheet" href="Styles/style.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- ===== HEADER ===== -->
+    <header>
+      <h1>📋 Job Application Tracker</h1>
+    </header>
+
+    <!-- ===== DASHBOARD STATS CARDS ===== -->
+    <section class="dashboard">
+      <div class="card">
+        <h3>Total</h3>
+        <p id="stat-total">0</p>
+      </div>
+      <div class="card">
+        <h3>Applied</h3>
+        <p id="stat-applied">0</p>
+      </div>
+      <div class="card">
+        <h3>Interview</h3>
+        <p id="stat-interview">0</p>
+      </div>
+      <div class="card">
+        <h3>Offer</h3>
+        <p id="stat-offer">0</p>
+      </div>
+    </section>
+
+    <!-- ===== TOOLBAR ===== -->
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search by company or role...">
+      <select id="statusFilter">
+        <option value="">All Statuses</option>
+        <option value="Applied">Applied</option>
+        <option value="Interview">Interview</option>
+        <option value="Offer">Offer</option>
+        <option value="Rejected">Rejected</option>
+      </select>
+      <button class="btn-primary" id="addBtn">+ Add Application</button>
+    </div>
+
+    <!-- ===== TABLE ===== -->
+    <div class="table-section">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Applied Date</th>
+            <th>Interview Date</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr>
+            <td colspan="7" class="empty-message">No applications yet. Click "+ Add Application" to get started!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== HIDDEN FORM MODAL ===== -->
+  <div id="formOverlay" class="form-overlay hidden">
+    <div class="form-container">
+      <h2 id="formTitle">Add Application</h2>
+      <form id="appForm">
+        <label for="company">Company</label>
+        <input type="text" id="company" required>
+
+        <label for="role">Role</label>
+        <input type="text" id="role" required>
+
+        <label for="status">Status</label>
+        <select id="status">
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Offer">Offer</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+
+        <label for="appliedDate">Applied Date</label>
+        <input type="date" id="appliedDate">
+
+        <label for="interviewDate">Interview Date</label>
+        <input type="date" id="interviewDate">
+
+        <label for="notes">Notes</label>
+        <textarea id="notes" rows="3"></textarea>
+
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary" id="saveBtn">Save</button>
+          <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="Scripts/storage.js"></script>
+  <script src="Scripts/app.js"></script>
+</body>
+</html>
